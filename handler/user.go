@@ -7,48 +7,39 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/labstack/echo/v4"
 	"sekiro_echo/model"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
+	. "sekiro_echo/conf"
+	"fmt"
+	"reflect"
 )
 
-func (h *Handler) Signup(c echo.Context) (err error) {
+func Signup(c echo.Context) (err error) {
 	// Bind
-	u := &model.User{ID: bson.NewObjectId()}
-	if err = c.Bind(u); err != nil {
+	User := model.User{}
+	if err = c.Bind(&User); err != nil {
 		return
 	}
 
 	// Validate
-	if u.Email == "" || u.Password == "" {
+	if User.Email == "" || User.Password == "" {
 		return &echo.HTTPError{Code: http.StatusBadRequest, Message: "invalid email or password"}
 	}
 
-	// Save user
-	db := h.DB.Clone()
-	defer db.Close()
-	if err = db.DB("twitter").C("users").Insert(u); err != nil {
-		return
-	}
+	User.CreateUser()
 
-	return c.JSON(http.StatusCreated, u)
+	return c.JSON(http.StatusCreated, User)
 }
 
-func (h *Handler) Login(c echo.Context) (err error) {
+func Login(c echo.Context) (err error) {
 	// Bind
 	u := new(model.User)
-	if err = c.Bind(u); err != nil {
+	if err = c.Bind(&u); err != nil {
 		return
 	}
 
 	// Find user
-	db := h.DB.Clone()
-	defer db.Close()
-	if err = db.DB("twitter").C("users").
-		Find(bson.M{"email": u.Email, "password": u.Password}).One(u); err != nil {
-		if err == mgo.ErrNotFound {
-			return &echo.HTTPError{Code: http.StatusUnauthorized, Message: "invalid email or password"}
-		}
-		return
+	user := u.GetUserByEmailPwd(u.Email, u.Password)
+	if user == nil {
+		return &echo.HTTPError{Code: http.StatusBadRequest, Message: "wrong email or password"}
 	}
 
 	//-----
@@ -60,38 +51,28 @@ func (h *Handler) Login(c echo.Context) (err error) {
 
 	// Set claims
 	claims := token.Claims.(jwt.MapClaims)
-	claims["id"] = u.ID
+	
+	claims["uid"] = user.UID
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
+	fmt.Println(reflect.TypeOf(claims["exp"]))
+	fmt.Println(reflect.TypeOf(claims["uid"]))
 
 	// Generate encoded token and send it as response
-	u.Token, err = token.SignedString([]byte(Key))
+	user.Token, err = token.SignedString([]byte(Conf.Jwt.Secret))
 	if err != nil {
 		return err
 	}
 
-	u.Password = "" // Don't send password
-	return c.JSON(http.StatusOK, u)
+	user.Password = "" // Don't send password
+	return c.JSON(http.StatusOK, user)
 }
 
-func (h *Handler) Follow(c echo.Context) (err error) {
-	userID := userIDFromToken(c)
-	id := c.Param("id")
 
-	// Add a follower to user
-	db := h.DB.Clone()
-	defer db.Close()
-	if err = db.DB("twitter").C("users").
-		UpdateId(bson.ObjectIdHex(id), bson.M{"$addToSet": bson.M{"followers": userID}}); err != nil {
-		if err == mgo.ErrNotFound {
-			return echo.ErrNotFound
-		}
-	}
-
-	return
-}
-
-func userIDFromToken(c echo.Context) string {
+func userIDFromToken(c echo.Context) uint {
 	user := c.Get("user").(*jwt.Token)
+	fmt.Println(user)
 	claims := user.Claims.(jwt.MapClaims)
-	return claims["id"].(string)
+	fmt.Println(reflect.TypeOf(claims["uid"]))
+	fmt.Println(reflect.TypeOf(claims["exp"]))
+	return claims["uid"].(uint)
 }

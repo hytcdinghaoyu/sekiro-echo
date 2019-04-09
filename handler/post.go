@@ -6,46 +6,23 @@ import (
 
 	"github.com/labstack/echo/v4"
 	"sekiro_echo/model"
-	"gopkg.in/mgo.v2"
-	"gopkg.in/mgo.v2/bson"
 )
 
-func (h *Handler) CreatePost(c echo.Context) (err error) {
-	u := &model.User{
-		ID: bson.ObjectIdHex(userIDFromToken(c)),
-	}
-	p := &model.Post{
-		ID:   bson.NewObjectId(),
-		From: u.ID.Hex(),
-	}
-	if err = c.Bind(p); err != nil {
+func CreatePost(c echo.Context) (err error) {
+
+	var p model.Post
+	if err = c.Bind(&p); err != nil {
 		return
 	}
 
-	// Validation
-	if p.To == "" || p.Message == "" {
-		return &echo.HTTPError{Code: http.StatusBadRequest, Message: "invalid to or message fields"}
-	}
+	p.UserId = userIDFromToken(c)
+	p.PostSave()
 
-	// Find user from database
-	db := h.DB.Clone()
-	defer db.Close()
-	if err = db.DB("twitter").C("users").FindId(u.ID).One(u); err != nil {
-		if err == mgo.ErrNotFound {
-			return echo.ErrNotFound
-		}
-		return
-	}
-
-	// Save post in database
-	if err = db.DB("twitter").C("posts").Insert(p); err != nil {
-		return
-	}
 	return c.JSON(http.StatusCreated, p)
 }
 
-func (h *Handler) FetchPost(c echo.Context) (err error) {
-	userID := userIDFromToken(c)
+func FetchPost(c echo.Context) (err error) {
+	userId := userIDFromToken(c)
 	page, _ := strconv.Atoi(c.QueryParam("page"))
 	limit, _ := strconv.Atoi(c.QueryParam("limit"))
 
@@ -58,16 +35,13 @@ func (h *Handler) FetchPost(c echo.Context) (err error) {
 	}
 
 	// Retrieve posts from database
-	posts := []*model.Post{}
-	db := h.DB.Clone()
-	if err = db.DB("twitter").C("posts").
-		Find(bson.M{"to": userID}).
-		Skip((page - 1) * limit).
-		Limit(limit).
-		All(&posts); err != nil {
-		return
-	}
-	defer db.Close()
+	var Post model.Post
+	posts := Post.GetUserPostsByUserId(userId, page, limit)
 
-	return c.JSON(http.StatusOK, posts)
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"title": "Post",
+		"posts": posts,
+	})
+
+	return nil
 }
