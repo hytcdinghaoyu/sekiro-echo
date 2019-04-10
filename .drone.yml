@@ -1,5 +1,5 @@
 kind: pipeline
-name: default
+name: build-sekiro
 
 steps:
 - name: test
