@@ -19,7 +19,7 @@ var (
 
 func init() {
 	// init conf
-	if err := InitConfig("../conf/conf.toml"); err != nil {
+	if err := InitConfig("../conf/conf_test.toml"); err != nil {
 		log.Panic(err)
 	}
 
