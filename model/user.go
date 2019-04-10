@@ -2,9 +2,10 @@ package model
 
 import (
 	"time"
+
 	"github.com/hb-go/echo-web/module/log"
 	"github.com/hb-go/gorm"
-	"github.com/satori/go.uuid"
+	uuid "github.com/satori/go.uuid"
 )
 
 func (u *User) CreateUser() {
@@ -25,23 +26,21 @@ func (u *User) GetUserByEmailPwd(email string, pwd string) *User {
 
 type (
 	User struct {
-		UID       uint 			`json:"uid" gorm:"primary_key"`
-		UUID      string 		`json:"uuid"`
-		Email     string        `json:"email"`
-		Password  string        `json:"password,omitempty"`
-		Token     string        `json:"token,omitempty" gorm:"-"`
-		CreatedAt time.Time 	`gorm:"column:created_time" json:"created_time,omitempty"`
-		UpdatedAt time.Time 	`gorm:"column:updated_time" json:"updated_time,omitempty"`
+		UID       uint64    `json:"uid" gorm:"primary_key"`
+		UUID      string    `json:"uuid"`
+		Email     string    `json:"email"`
+		Password  string    `json:"password,omitempty"`
+		Token     string    `json:"token,omitempty" gorm:"-"`
+		CreatedAt time.Time `gorm:"column:created_time" json:"created_time,omitempty"`
+		UpdatedAt time.Time `gorm:"column:updated_time" json:"updated_time,omitempty"`
 	}
 )
 
 func (user *User) BeforeCreate(scope *gorm.Scope) error {
-  scope.SetColumn("UUID", uuid.NewV4())
-  return nil
+	scope.SetColumn("UUID", uuid.NewV4())
+	return nil
 }
 
 func (u User) TableName() string {
 	return "user"
 }
-
-

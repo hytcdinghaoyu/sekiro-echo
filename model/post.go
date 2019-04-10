@@ -2,6 +2,7 @@ package model
 
 import (
 	"time"
+
 	"github.com/hb-go/echo-web/module/log"
 )
 
@@ -20,7 +21,7 @@ func (p *Post) GetPostById(id uint64) *Post {
 	return &post
 }
 
-func (p *Post) GetUserPostsByUserId(userId uint, page int, size int) *[]Post {
+func (p *Post) GetUserPostsByUserId(userId uint64, page int, size int) *[]Post {
 	posts := []Post{}
 	if err := DB().Where("user_id = ?", userId).Offset((page - 1) * size).Limit(size).Find(&posts).Error; err != nil {
 		log.Debugf("Get user posts error: %v", err)
@@ -44,8 +45,8 @@ func (p *Post) PostSave() {
 }
 
 type Post struct {
-	Id        uint    `json:"id,omitempty"`
-	UserId    uint    `json:"user_id,omitempty"`
+	Id        uint      `json:"id,omitempty"`
+	UserId    uint64    `json:"user_id,omitempty"`
 	Title     string    `json:"title,omitempty"`
 	Context   string    `json:"context,omitempty"`
 	CreatedAt time.Time `gorm:"column:created_time" json:"created_time,omitempty"`

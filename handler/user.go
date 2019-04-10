@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"strconv"
 	"net/http"
 	"time"
 
@@ -8,8 +9,6 @@ import (
 	"github.com/labstack/echo/v4"
 	"sekiro_echo/model"
 	. "sekiro_echo/conf"
-	"fmt"
-	"reflect"
 )
 
 func Signup(c echo.Context) (err error) {
@@ -52,10 +51,8 @@ func Login(c echo.Context) (err error) {
 	// Set claims
 	claims := token.Claims.(jwt.MapClaims)
 	
-	claims["uid"] = user.UID
+	claims["uid"] = strconv.FormatUint(user.UID, 10)
 	claims["exp"] = time.Now().Add(time.Hour * 72).Unix()
-	fmt.Println(reflect.TypeOf(claims["exp"]))
-	fmt.Println(reflect.TypeOf(claims["uid"]))
 
 	// Generate encoded token and send it as response
 	user.Token, err = token.SignedString([]byte(Conf.Jwt.Secret))
@@ -68,11 +65,13 @@ func Login(c echo.Context) (err error) {
 }
 
 
-func userIDFromToken(c echo.Context) uint {
+func userIDFromToken(c echo.Context) uint64 {
 	user := c.Get("user").(*jwt.Token)
-	fmt.Println(user)
 	claims := user.Claims.(jwt.MapClaims)
-	fmt.Println(reflect.TypeOf(claims["uid"]))
-	fmt.Println(reflect.TypeOf(claims["exp"]))
-	return claims["uid"].(uint)
+
+	uid, err := strconv.ParseUint(claims["uid"].(string), 10, 64)
+	if err != nil {
+        panic(err)
+    }
+	return uid
 }
