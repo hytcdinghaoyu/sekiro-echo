@@ -26,10 +26,10 @@ func (u *User) GetUserByEmailPwd(email string, pwd string) *User {
 
 type (
 	User struct {
-		UID       uint64    `json:"uid" gorm:"primary_key"`
-		UUID      string    `json:"uuid" gorm:"column:uuid"`
-		Email     string    `json:"email"`
-		Password  string    `json:"password,omitempty"`
+		UID       uint64    `json:"uid" gorm:"primary_key;AUTO_INCREMENT"`
+		UUID      string    `json:"uuid" gorm:"type:varchar(50)"`
+		Email     string    `json:"email" gorm:"type:varchar(100)"`
+		Password  string    `json:"password,omitempty" gorm:"type:varchar(100)"`
 		Token     string    `json:"token,omitempty" gorm:"-"`
 		CreatedAt time.Time `gorm:"column:created_time" json:"-"`
 		UpdatedAt time.Time `gorm:"column:updated_time" json:"-"`
