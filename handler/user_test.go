@@ -9,6 +9,8 @@ import (
 
 	. "sekiro_echo/conf"
 
+	"sekiro_echo/model"
+
 	"github.com/labstack/echo/v4"
 	"github.com/stretchr/testify/assert"
 )
@@ -22,6 +24,9 @@ func init() {
 	if err := InitConfig("../conf/conf_test.toml"); err != nil {
 		log.Panic(err)
 	}
+
+	//migrate db
+	model.DB().AutoMigrate(&model.Post{}, &model.User{})
 
 }
 
