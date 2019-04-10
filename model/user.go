@@ -26,7 +26,7 @@ func (u *User) GetUserByEmailPwd(email string, pwd string) *User {
 
 type (
 	User struct {
-		UID       uint64    `json:"uid" gorm:"primary_key;AUTO_INCREMENT"`
+		UID       uint64    `json:"uid" gorm:"type:uint(10);primary_key;AUTO_INCREMENT"`
 		UUID      string    `json:"uuid" gorm:"type:varchar(50)"`
 		Email     string    `json:"email" gorm:"type:varchar(100)"`
 		Password  string    `json:"password,omitempty" gorm:"type:varchar(100)"`
