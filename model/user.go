@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/hb-go/echo-web/module/log"
@@ -27,12 +28,12 @@ func (u *User) GetUserByEmailPwd(email string, pwd string) *User {
 type (
 	User struct {
 		UID       uint64    `json:"uid" gorm:"primary_key"`
-		UUID      string    `json:"uuid"`
+		UUID      string    `json:"uuid" gorm:"column:uuid"`
 		Email     string    `json:"email"`
 		Password  string    `json:"password,omitempty"`
 		Token     string    `json:"token,omitempty" gorm:"-"`
-		CreatedAt time.Time `gorm:"column:created_time" json:"created_time,omitempty"`
-		UpdatedAt time.Time `gorm:"column:updated_time" json:"updated_time,omitempty"`
+		CreatedAt time.Time `gorm:"column:created_time" json:"-"`
+		UpdatedAt time.Time `gorm:"column:updated_time" json:"-"`
 	}
 )
 
