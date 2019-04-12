@@ -22,16 +22,11 @@ type MatchesRep struct {
 
 func main() {
 
-	// match := &model.Match{
-	// 	ID: bson.NewObjectId(),
-	// }
-	// match.Score.Winner = "barca"
-	// match.MatchID = 12201
-
 	db, err := mgo.Dial("localhost")
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
 
 	// Create indices
 	if err = db.Copy().DB("football_data").C("matches").EnsureIndex(mgo.Index{
@@ -41,8 +36,7 @@ func main() {
 		log.Fatal(err)
 	}
 
-	url := "http://api.football-data.org/v2/matches"
-
+	url := "https://api.football-data.org/v2/matches"
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("X-Auth-Token", "4958466805ba41f680595be4fc92ac87")
 
@@ -54,13 +48,29 @@ func main() {
 	matchesRep := MatchesRep{}
 	json.Unmarshal(body, &matchesRep)
 
+	var matchesCollection *mgo.Collection
+	matchesCollection = db.DB("football_data").C("matches")
 	for _, match := range matchesRep.Matches {
 		match.ID = bson.NewObjectId()
 		fmt.Println(match)
-		if err = db.DB("football_data").C("matches").Insert(&match); err != nil {
-			fmt.Println(err)
-			return
+
+		var matchFind model.Match
+		if err = matchesCollection.Find(bson.M{"matchid": match.MatchID}).One(&matchFind); err != nil {
+			//if not found insert
+			if err == mgo.ErrNotFound {
+				//return &echo.HTTPError{Code: http.StatusUnauthorized, Message: "invalid email or password"}
+				if err = matchesCollection.Insert(&match); err != nil {
+					log.Fatal(err)
+					return
+				}
+			}
+		} else {
+			fmt.Println(match.Score.FullTime.HomeTeam)
+			fmt.Println(matchFind.Status)
+			matchesCollection.Update(bson.M{"matchid": matchFind.MatchID}, bson.M{"$set": bson.M{"status": "changed1"}})
+
 		}
+
 	}
 
 	os.Exit(0)
