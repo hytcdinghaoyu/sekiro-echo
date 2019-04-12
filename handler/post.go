@@ -4,10 +4,12 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/labstack/echo/v4"
 	"sekiro_echo/model"
+
+	"github.com/labstack/echo/v4"
 )
 
+//CreatePost create user post
 func CreatePost(c echo.Context) (err error) {
 
 	var p model.Post
@@ -21,8 +23,9 @@ func CreatePost(c echo.Context) (err error) {
 	return c.JSON(http.StatusCreated, p)
 }
 
+//FetchPost fetch user posts
 func FetchPost(c echo.Context) (err error) {
-	userId := userIDFromToken(c)
+	userID := userIDFromToken(c)
 	page, _ := strconv.Atoi(c.QueryParam("page"))
 	limit, _ := strconv.Atoi(c.QueryParam("limit"))
 
@@ -36,7 +39,7 @@ func FetchPost(c echo.Context) (err error) {
 
 	// Retrieve posts from database
 	var Post model.Post
-	posts := Post.GetUserPostsByUserId(userId, page, limit)
+	posts := Post.GetUserPostsByUserId(userID, page, limit)
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"title": "Post",
