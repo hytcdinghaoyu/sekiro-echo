@@ -10,6 +10,7 @@ import (
 
 	"sekiro_echo/model"
 
+	"github.com/fatih/structs"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -65,10 +66,11 @@ func main() {
 				}
 			}
 		} else {
-			fmt.Println(match.Score.FullTime.HomeTeam)
-			fmt.Println(matchFind.Status)
-			matchesCollection.Update(bson.M{"matchid": matchFind.MatchID}, bson.M{"$set": bson.M{"status": "changed1"}})
-
+			if match.Status == "IN_PLAY" {
+				scoreMap := structs.Map(match.Score)
+				fmt.Println(scoreMap)
+				matchesCollection.Update(bson.M{"matchid": matchFind.MatchID}, bson.M{"$set": bson.M{"score": scoreMap}})
+			}
 		}
 
 	}

@@ -5,6 +5,7 @@ go 1.12
 require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/fatih/structs v1.1.0
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/hb-go/echo-web v0.0.0-20181229233936-ed7eb42ba229
 	github.com/hb-go/gorm v1.9.1
