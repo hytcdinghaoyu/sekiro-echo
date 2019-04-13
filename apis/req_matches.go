@@ -65,8 +65,7 @@ func main() {
 		} else {
 			if match.Status == "IN_PLAY" {
 				scoreMap := structs.Map(match.Score)
-				fmt.Printf("%s VS %s", match.HomeTeam.Name, match.AwayTeam.Name)
-				fmt.Printf("%d : %d", match.Score.FullTime.HomeTeam, match.Score.FullTime.AwayTeam)
+				fmt.Printf("%s %d : %d %s \n", match.HomeTeam.Name, match.Score.FullTime.HomeTeam, match.Score.FullTime.AwayTeam, match.AwayTeam.Name)
 				matchesCollection.Update(bson.M{"matchid": matchFind.MatchID}, bson.M{"$set": bson.M{"score": scoreMap}})
 			}
 		}
