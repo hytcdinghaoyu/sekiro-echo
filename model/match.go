@@ -18,17 +18,17 @@ type Match struct {
 }
 
 type ScoreSum struct {
-	Winner    string
-	Duration  string
-	FullTime  ScoreDesc
-	HalfTime  ScoreDesc
-	ExtraTime ScoreDesc
-	Penalties ScoreDesc
+	Winner    string    `bson:"Winner"`
+	Duration  string    `bson:"Duration"`
+	FullTime  ScoreDesc `bson:"FullTime"`
+	HalfTime  ScoreDesc `bson:"HalfTime"`
+	ExtraTime ScoreDesc `bson:"ExtraTime"`
+	Penalties ScoreDesc `bson:"Penalties"`
 }
 
 type ScoreDesc struct {
-	HomeTeam uint8
-	AwayTeam uint8
+	HomeTeam uint8 `bson:"HomeTeam"`
+	AwayTeam uint8 `bson:"AwayTeam"`
 }
 
 type TeamSum struct {
