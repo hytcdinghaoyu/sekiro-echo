@@ -53,17 +53,14 @@ func main() {
 	matchesCollection = db.DB("football_data").C("matches")
 	for _, match := range matchesRep.Matches {
 		match.ID = bson.NewObjectId()
-		fmt.Println(match)
 
 		var matchFind model.Match
-		if err = matchesCollection.Find(bson.M{"matchid": match.MatchID}).One(&matchFind); err != nil {
+		if err = matchesCollection.Find(bson.M{"matchid": match.MatchID}).One(&matchFind); err == mgo.ErrNotFound {
 			//if not found insert
-			if err == mgo.ErrNotFound {
-				//return &echo.HTTPError{Code: http.StatusUnauthorized, Message: "invalid email or password"}
-				if err = matchesCollection.Insert(&match); err != nil {
-					log.Fatal(err)
-					return
-				}
+			fmt.Println(match)
+			if err = matchesCollection.Insert(&match); err != nil {
+				log.Fatal(err)
+				return
 			}
 		} else {
 			if match.Status == "IN_PLAY" {
