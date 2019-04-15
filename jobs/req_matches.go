@@ -81,7 +81,7 @@ func AddScheduledMatch() {
 			if err = matchesCollection.Insert(&match); err != nil {
 				log.Fatal(err)
 				return
-			}ç
+			}
 		} else {
 			log.Println("match exists:" + matchFind.ID)
 			if match.Status == "IN_PLAY" {
