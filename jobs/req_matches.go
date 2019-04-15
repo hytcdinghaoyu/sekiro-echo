@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"time"
 
 	"sekiro_echo/model"
@@ -37,6 +38,13 @@ func init() {
 	}); err != nil {
 		log.Fatal(err)
 	}
+
+	f, err := os.OpenFile("cron.log", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("error opening file: %v", err)
+	}
+	//defer f.Close()
+	log.SetOutput(f)
 }
 
 type MatchesRep struct {
