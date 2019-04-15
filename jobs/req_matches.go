@@ -20,14 +20,14 @@ var (
 )
 
 const (
-	MONGO_ADDR = "localhost"
-	DATA_URL   = "https://api.football-data.org/v2/matches"
-	AUTH_TOKEN = "4958466805ba41f680595be4fc92ac87"
+	MongoAddr = "localhost"
+	DataURL   = "https://api.football-data.org/v2/matches"
+	AuthToken = "4958466805ba41f680595be4fc92ac87"
 )
 
 func init() {
 	var err error
-	mongodb, err = mgo.Dial(MONGO_ADDR)
+	mongodb, err = mgo.Dial(MongoAddr)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -53,12 +53,12 @@ type MatchesRep struct {
 	Matches []model.Match
 }
 
-//每天运行一次，获取未来七天的赛程
+//AddScheduledMatch 每天运行一次，获取未来七天的赛程
 func AddScheduledMatch() {
 	log.Println("=====>Start running job: AddScheduledMatch")
 
-	req, _ := http.NewRequest("GET", DATA_URL, nil)
-	req.Header.Add("X-Auth-Token", AUTH_TOKEN)
+	req, _ := http.NewRequest("GET", DataURL, nil)
+	req.Header.Add("X-Auth-Token", AuthToken)
 
 	q := req.URL.Query()
 	q.Add("dateFrom", time.Now().Format("2006-01-02"))
@@ -95,12 +95,12 @@ func AddScheduledMatch() {
 	log.Println("=====>End running job: AddScheduledMatch")
 }
 
-//每分钟运行一次，更新比分
+//UpdateScore 每分钟运行一次，更新比分
 func UpdateScore() {
 	log.Println("=====>Start running job: UpdateScore")
 
-	req, _ := http.NewRequest("GET", DATA_URL, nil)
-	req.Header.Add("X-Auth-Token", AUTH_TOKEN)
+	req, _ := http.NewRequest("GET", DataURL, nil)
+	req.Header.Add("X-Auth-Token", AuthToken)
 
 	q := req.URL.Query()
 	q.Add("status", "IN_PLAY")
