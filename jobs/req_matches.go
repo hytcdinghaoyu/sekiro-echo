@@ -2,7 +2,6 @@ package jobs
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -48,6 +47,7 @@ type MatchesRep struct {
 
 //每天运行一次，获取未来七天的赛程
 func AddScheduledMatch() {
+	log.Println("=====>Start running job: AddScheduledMatch")
 
 	req, _ := http.NewRequest("GET", DATA_URL, nil)
 	req.Header.Add("X-Auth-Token", AUTH_TOKEN)
@@ -73,24 +73,61 @@ func AddScheduledMatch() {
 	matchesCollection = mongodb.DB("football_data").C("matches")
 	for _, match := range matchesRep.Matches {
 		match.ID = bson.NewObjectId()
-
 		var matchFind model.Match
 		if err := matchesCollection.Find(bson.M{"matchid": match.MatchID}).One(&matchFind); err == mgo.ErrNotFound {
 			//if not found insert
-			log.Println(match)
+			log.Printf("Added match: %s vs %s \n", match.HomeTeam.Name, match.AwayTeam.Name)
 			if err = matchesCollection.Insert(&match); err != nil {
 				log.Fatal(err)
 				return
 			}
+		}
+	}
+
+	log.Println("=====>End running job: AddScheduledMatch")
+}
+
+//每分钟运行一次，更新比分
+func UpdateScore() {
+	log.Println("=====>Start running job: UpdateScore")
+
+	req, _ := http.NewRequest("GET", DATA_URL, nil)
+	req.Header.Add("X-Auth-Token", AUTH_TOKEN)
+
+	q := req.URL.Query()
+	q.Add("status", "IN_PLAY")
+	req.URL.RawQuery = q.Encode()
+
+	res, err := http.DefaultClient.Do(req)
+	if err != nil {
+		log.Println("Connecting to the server Error,Waiting for next run")
+		return
+	}
+
+	defer res.Body.Close()
+	body, _ := ioutil.ReadAll(res.Body)
+
+	matchesRep := MatchesRep{}
+	json.Unmarshal(body, &matchesRep)
+
+	var matchesCollection *mgo.Collection
+	matchesCollection = mongodb.DB("football_data").C("matches")
+	for _, match := range matchesRep.Matches {
+		match.ID = bson.NewObjectId()
+
+		var matchFind model.Match
+		if err := matchesCollection.Find(bson.M{"matchid": match.MatchID}).One(&matchFind); err == mgo.ErrNotFound {
+			log.Println("match not found")
+			return
 		} else {
-			log.Println("match exists:" + matchFind.ID)
-			if match.Status == "IN_PLAY" {
-				scoreMap := structs.Map(match.Score)
-				fmt.Printf("%s %d : %d %s \n", match.HomeTeam.Name, match.Score.FullTime.HomeTeam, match.Score.FullTime.AwayTeam, match.AwayTeam.Name)
-				matchesCollection.Update(bson.M{"matchid": matchFind.MatchID}, bson.M{"$set": bson.M{"score": scoreMap}})
-			}
+			//update score
+			scoreMap := structs.Map(match.Score)
+			log.Printf("%s %d : %d %s \n", match.HomeTeam.Name, match.Score.FullTime.HomeTeam, match.Score.FullTime.AwayTeam, match.AwayTeam.Name)
+			matchesCollection.Update(bson.M{"matchid": matchFind.MatchID}, bson.M{"$set": bson.M{"score": scoreMap}})
 		}
 
 	}
+
+	log.Println("=====>End running job: UpdateScore")
 
 }
