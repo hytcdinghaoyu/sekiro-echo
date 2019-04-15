@@ -9,7 +9,7 @@ import (
 type Match struct {
 	ID       bson.ObjectId `json:"-" bson:"_id"`
 	MatchID  uint64        `json:"id"`
-	Status   string
+	Status   string        `bson:"Status"`
 	MatchDay uint8
 	UtcDate  time.Time
 	Score    ScoreSum
