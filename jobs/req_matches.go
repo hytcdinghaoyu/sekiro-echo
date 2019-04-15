@@ -121,12 +121,9 @@ func UpdateScore() {
 	var matchesCollection *mgo.Collection
 	matchesCollection = mongodb.DB("football_data").C("matches")
 	for _, match := range matchesRep.Matches {
-		match.ID = bson.NewObjectId()
-
 		var matchFind model.Match
 		if err := matchesCollection.Find(bson.M{"matchid": match.MatchID}).One(&matchFind); err == mgo.ErrNotFound {
 			log.Println("match not found")
-			return
 		} else {
 			//update score
 			scoreMap := structs.Map(match.Score)
