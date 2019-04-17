@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	"strconv"
+	"time"
 
 	"sekiro_echo/model"
 
@@ -12,7 +13,7 @@ import (
 
 //FetchMatches fetch matches
 func FetchMatches(c echo.Context) (err error) {
-	//date := c.QueryParam("date")
+	date := c.QueryParam("date")
 	status := c.QueryParam("status")
 
 	page, _ := strconv.Atoi(c.QueryParam("page"))
@@ -28,12 +29,15 @@ func FetchMatches(c echo.Context) (err error) {
 	if status == "" {
 		status = "SCHEDULED"
 	}
+	if date == "" {
+		date = time.Now().Format("2006-01-02")
+	}
 
 	// Retrieve posts from database
 	matches := []*model.Match{}
 	db := mongodb.Clone()
 	if err = db.DB("football_data").C("matches").
-		Find(bson.M{"Status": status}).
+		Find(bson.M{"Status": status, "matchdate": date}).
 		Skip((page - 1) * limit).
 		Limit(limit).
 		All(&matches); err != nil {

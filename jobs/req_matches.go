@@ -79,12 +79,15 @@ func AddScheduledMatch() {
 
 	var matchesCollection *mgo.Collection
 	matchesCollection = mongodb.DB("football_data").C("matches")
+	var cstSh, _ = time.LoadLocation("Asia/Shanghai")
 	for _, match := range matchesRep.Matches {
 		match.ID = bson.NewObjectId()
 		var matchFind model.Match
 		if err := matchesCollection.Find(bson.M{"matchid": match.MatchID}).One(&matchFind); err == mgo.ErrNotFound {
 			//if not found insert
 			log.Printf("Added match: %s vs %s \n", match.HomeTeam.Name, match.AwayTeam.Name)
+			match.MatchDate = match.UtcDate.In(cstSh).Format("2006-01-02")
+			match.MatchDateTime = match.UtcDate.In(cstSh).Format("15:04")
 			if err = matchesCollection.Insert(&match); err != nil {
 				log.Fatal(err)
 				return
