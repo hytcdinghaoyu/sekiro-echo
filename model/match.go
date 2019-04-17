@@ -7,14 +7,15 @@ import (
 )
 
 type Match struct {
-	ID       bson.ObjectId `json:"-" bson:"_id"`
-	MatchID  uint64        `json:"id"`
-	Status   string        `bson:"Status"`
-	MatchDay uint8
-	UtcDate  time.Time
-	Score    ScoreSum
-	HomeTeam TeamSum
-	AwayTeam TeamSum
+	ID          bson.ObjectId `json:"-" bson:"_id"`
+	MatchID     uint64        `json:"id"`
+	Competition CompetitionSum
+	Status      string `bson:"Status"`
+	MatchDay    uint8
+	UtcDate     time.Time
+	Score       ScoreSum
+	HomeTeam    TeamSum
+	AwayTeam    TeamSum
 }
 
 type ScoreSum struct {
@@ -33,5 +34,10 @@ type ScoreDesc struct {
 
 type TeamSum struct {
 	ID   uint16
+	Name string
+}
+
+type CompetitionSum struct {
+	ID   uint64
 	Name string
 }

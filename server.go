@@ -34,6 +34,8 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
+	e.GET("/matches", handler.FetchMatches)
+
 	e.Use(middleware.JWTWithConfig(middleware.JWTConfig{
 		SigningKey: []byte(Conf.Jwt.Secret),
 		Skipper: func(c echo.Context) bool {
