@@ -4,8 +4,6 @@ import (
 	"time"
 
 	"github.com/hb-go/echo-web/module/log"
-	"github.com/hb-go/gorm"
-	uuid "github.com/satori/go.uuid"
 )
 
 func (u *User) CreateUser() {
@@ -35,11 +33,6 @@ type (
 		UpdatedAt time.Time `gorm:"column:updated_time" json:"-"`
 	}
 )
-
-func (user *User) BeforeCreate(scope *gorm.Scope) error {
-	scope.SetColumn("UUID", uuid.NewV4())
-	return nil
-}
 
 func (u User) TableName() string {
 	return "user"

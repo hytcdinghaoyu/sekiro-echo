@@ -33,7 +33,7 @@ func FetchMatches(c echo.Context) (err error) {
 		date = time.Now().Format("2006-01-02")
 	}
 
-	// Retrieve posts from database
+	// Retrieve matches from database
 	matches := []*model.Match{}
 	db := mongodb.Clone()
 	if err = db.DB("football_data").C("matches").

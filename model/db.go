@@ -3,18 +3,16 @@ package model
 import (
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/hb-go/gorm"
+	"github.com/jinzhu/gorm"
 
 	. "sekiro_echo/conf"
-	"github.com/hb-go/echo-web/model/orm"
-	"github.com/hb-go/echo-web/module/log"
 )
 
 var db *gorm.DB
 
+//DB get db connection
 func DB() *gorm.DB {
 	if db == nil {
-		log.Debugf("Model NewDB")
 
 		newDb, err := newDB()
 		if err != nil {
@@ -23,7 +21,6 @@ func DB() *gorm.DB {
 		newDb.DB().SetMaxIdleConns(10)
 		newDb.DB().SetMaxOpenConns(100)
 
-		newDb.SetLogger(orm.Logger{})
 		newDb.LogMode(true)
 		db = newDb
 	}

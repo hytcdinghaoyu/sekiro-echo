@@ -10,6 +10,7 @@ require (
 	github.com/hb-go/echo-web v0.0.0-20181229233936-ed7eb42ba229
 	github.com/hb-go/gorm v1.9.1
 	github.com/jasonlvhit/gocron v0.0.0-20190402024347-5bcdd9fcfa9b
+	github.com/jinzhu/gorm v1.9.1
 	github.com/labstack/echo v0.0.0-20181123063703-c7eb8da9ec73
 	github.com/labstack/echo/v4 v4.0.0
 	github.com/labstack/gommon v0.2.8
