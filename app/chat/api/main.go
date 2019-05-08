@@ -33,5 +33,5 @@ func main() {
 
 // 处理用户连接
 func HandleConnect(session *melody.Session) {
-	log.Println("new connection ======>>>")
+	log.Println("disconnected======>>>")
 }
