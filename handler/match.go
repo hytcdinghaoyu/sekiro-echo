@@ -7,17 +7,17 @@ import (
 
 	"sekiro_echo/model"
 
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2/bson"
 )
 
 //FetchMatches fetch matches
-func FetchMatches(c echo.Context) (err error) {
-	date := c.QueryParam("date")
-	status := c.QueryParam("status")
+func FetchMatches(c *gin.Context) {
+	date := c.Query("date")
+	status := c.Query("status")
 
-	page, _ := strconv.Atoi(c.QueryParam("page"))
-	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
 
 	// Defaults
 	if page == 0 {
@@ -36,7 +36,7 @@ func FetchMatches(c echo.Context) (err error) {
 	// Retrieve matches from database
 	matches := []*model.Match{}
 	db := mongodb.Clone()
-	if err = db.DB("football_data").C("matches").
+	if err := db.DB("football_data").C("matches").
 		Find(bson.M{"Status": status, "matchdate": date}).
 		Skip((page - 1) * limit).
 		Limit(limit).
@@ -45,5 +45,5 @@ func FetchMatches(c echo.Context) (err error) {
 	}
 	defer db.Close()
 
-	return c.JSON(http.StatusOK, matches)
+	c.JSON(http.StatusOK, matches)
 }

@@ -5,30 +5,22 @@ import (
 
 	"github.com/gin-gonic/gin"
 
+	"sekiro_echo/handler"
+
 	"github.com/micro/go-web"
 )
-
-type Say struct{}
-
-func (s *Say) Anything(c *gin.Context) {
-	log.Print("Received Say.Anything API request")
-	c.JSON(200, map[string]string{
-		"message": "Hi, this is the Greeter API",
-	})
-}
 
 func main() {
 	// Create service 这里需要注意使用的web.NewService 而不是micro.NewService 后文会有解释
 	service := web.NewService(
-		web.Name("go.micro.api.greeter"),
+		web.Name("go.micro.api.score"),
 	)
 
 	service.Init()
 
 	// Create RESTful handler (using Gin)
-	say := new(Say)
 	router := gin.Default()
-	router.GET("/greeter", say.Anything)
+	router.GET("/score/match", handler.FetchMatches)
 
 	// Register Handler
 	service.Handle("/", router)

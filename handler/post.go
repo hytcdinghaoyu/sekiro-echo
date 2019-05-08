@@ -17,7 +17,7 @@ func CreatePost(c echo.Context) (err error) {
 		return
 	}
 
-	p.UserId = userIDFromToken(c)
+	p.UserId = 1
 	p.PostSave()
 
 	return c.JSON(http.StatusCreated, p)
@@ -25,7 +25,8 @@ func CreatePost(c echo.Context) (err error) {
 
 //FetchPost fetch user posts
 func FetchPost(c echo.Context) (err error) {
-	userID := userIDFromToken(c)
+	var userID uint64
+	userID = 1
 	page, _ := strconv.Atoi(c.QueryParam("page"))
 	limit, _ := strconv.Atoi(c.QueryParam("limit"))
 
