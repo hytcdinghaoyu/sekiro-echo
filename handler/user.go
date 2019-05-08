@@ -24,6 +24,7 @@ func Signup(c *gin.Context) {
 	if User.Email == "" || User.Password == "" {
 		//return &echo.HTTPError{Code: http.StatusBadRequest, Message: "invalid email or password"}
 		c.JSON(http.StatusOK, gin.H{"code": LoginError, "message": StatusText(LoginError)})
+		return
 	}
 
 	User.CreateUser()
