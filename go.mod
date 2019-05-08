@@ -8,6 +8,7 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/gin-gonic/gin v1.4.0
 	github.com/go-sql-driver/mysql v1.4.1
+	github.com/gorilla/websocket v1.4.0 // indirect
 	github.com/hb-go/echo-web v0.0.0-20181229233936-ed7eb42ba229
 	github.com/hb-go/gorm v1.9.1
 	github.com/jasonlvhit/gocron v0.0.0-20190402024347-5bcdd9fcfa9b
@@ -23,4 +24,5 @@ require (
 	github.com/valyala/fasttemplate v1.0.1 // indirect
 	golang.org/x/crypto v0.0.0-20190313024323-a1f597ede03a // indirect
 	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce
+	gopkg.in/olahol/melody.v1 v1.0.0-20170518105555-d52139073376
 )
