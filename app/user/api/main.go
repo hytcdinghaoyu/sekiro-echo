@@ -9,7 +9,8 @@ import (
 
 	"sekiro_echo/conf"
 
-	"github.com/gin-gonic/contrib/jwt"
+	"sekiro_echo/lib/middleware"
+
 	"github.com/micro/go-web"
 )
 
@@ -38,12 +39,11 @@ func main() {
 	}
 
 	// private group use jwt auth
-	private := router.Group("/user/private")
+	private := router.Group("/user/post")
 	{
-		private.Use(jwt.Auth(conf.Conf.Jwt.Secret))
-		private.GET("/", func(c *gin.Context) {
-			c.JSON(200, gin.H{"message": "Hello from private"})
-		})
+		private.Use(middleware.JWT(conf.Conf.Jwt.Secret))
+		private.POST("/get", handler.FetchPost)
+		private.POST("/create", handler.CreatePost)
 
 	}
 

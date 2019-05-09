@@ -6,29 +6,29 @@ import (
 
 	"sekiro_echo/model"
 
-	"github.com/labstack/echo/v4"
+	"github.com/gin-gonic/gin"
 )
 
 //CreatePost create user post
-func CreatePost(c echo.Context) (err error) {
+func CreatePost(c *gin.Context) {
 
 	var p model.Post
-	if err = c.Bind(&p); err != nil {
+	if err := c.Bind(&p); err != nil {
 		return
 	}
 
 	p.UserId = 1
 	p.PostSave()
 
-	return c.JSON(http.StatusCreated, p)
+	c.JSON(http.StatusCreated, p)
 }
 
 //FetchPost fetch user posts
-func FetchPost(c echo.Context) (err error) {
+func FetchPost(c *gin.Context) {
 	var userID uint64
 	userID = 1
-	page, _ := strconv.Atoi(c.QueryParam("page"))
-	limit, _ := strconv.Atoi(c.QueryParam("limit"))
+	page, _ := strconv.Atoi(c.Query("page"))
+	limit, _ := strconv.Atoi(c.Query("limit"))
 
 	// Defaults
 	if page == 0 {
@@ -47,5 +47,4 @@ func FetchPost(c echo.Context) (err error) {
 		"posts": posts,
 	})
 
-	return nil
 }

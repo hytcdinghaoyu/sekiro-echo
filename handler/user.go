@@ -45,6 +45,7 @@ func Login(c *gin.Context) {
 	if user == nil {
 		//return &c.HTTPError{Code: http.StatusBadRequest, Message: "wrong email or password"}
 		c.JSON(http.StatusOK, gin.H{"code": LoginError, "message": StatusText(LoginError)})
+		return
 	}
 
 	// Create token
