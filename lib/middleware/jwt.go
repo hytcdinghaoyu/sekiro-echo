@@ -1,8 +1,6 @@
 package middleware
 
 import (
-	"log"
-
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 
@@ -137,16 +135,15 @@ func JWTWithConfig(config JWTConfig) gin.HandlerFunc {
 			claims := reflect.New(t).Interface().(jwt.Claims)
 			token, err = jwt.ParseWithClaims(auth, claims, config.keyFunc)
 		}
-		if err == nil && token.Valid {
-			// Store user information from token into context.
-			c.Set(config.ContextKey, token)
-			c.Next()
+
+		if err != nil || !token.Valid {
+			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "invalid or expired jwt"})
+			return
 		}
 
-		log.Println(err)
-		log.Println(token.Valid)
-
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "invalid or expired jwt"})
+		// Store user information from token into context.
+		c.Set(config.ContextKey, token)
+		c.Next()
 
 	}
 }
