@@ -74,9 +74,9 @@ var (
 //
 // See: https://jwt.io/introduction
 // See `JWTConfig.TokenLookup`
-func JWT(key interface{}) gin.HandlerFunc {
+func JWT(key string) gin.HandlerFunc {
 	c := DefaultJWTConfig
-	c.SigningKey = key
+	c.SigningKey = ([]byte(key))
 	return JWTWithConfig(c)
 }
 
