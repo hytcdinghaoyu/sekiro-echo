@@ -1,6 +1,8 @@
 package middleware
 
 import (
+	"log"
+
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 
@@ -123,6 +125,7 @@ func JWTWithConfig(config JWTConfig) gin.HandlerFunc {
 		auth := extractor(c)
 		if auth == "" {
 			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "missing or malformed jwt"})
+			return
 		}
 
 		token := new(jwt.Token)
@@ -139,6 +142,9 @@ func JWTWithConfig(config JWTConfig) gin.HandlerFunc {
 			c.Set(config.ContextKey, token)
 			c.Next()
 		}
+
+		log.Println(err)
+		log.Println(token.Valid)
 
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "invalid or expired jwt"})
 
