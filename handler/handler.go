@@ -14,7 +14,7 @@ var (
 func Mongodb() *mgo.Session {
 	if mongodb == nil {
 		var err error
-		mongodb, err = mgo.Dial("124.77.180.237")
+		mongodb, err = mgo.Dial("149.129.92.77")
 		if err != nil {
 			log.Fatal(err)
 		}
