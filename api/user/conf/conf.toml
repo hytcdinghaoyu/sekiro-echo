@@ -27,7 +27,7 @@ type = "BINDATA"
 [database]
 name = "sekiro_db"
 user_name = "root"
-pwd  = "123456"
+pwd  = "124.77.180.237"
 host = "127.0.0.1"
 port = "3306"
 
