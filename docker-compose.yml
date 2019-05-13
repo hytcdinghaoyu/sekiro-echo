@@ -1,16 +1,7 @@
-consul:
-  command: -server -bootstrap -rejoin 
-  image: progrium/consul:latest
-  ports:
-    - "8300:8300"
-    - "8400:8400"
-    - "8500:8500"
-    - "8600:53/udp"
 micro:
-  command: --registry_address=consul:8500 api --handler=web
+  command: api --handler=web
   image: microhq/micro:latest
   links:
-    - consul
     - api-user
     - api-score
     - api-chat
@@ -18,16 +9,7 @@ micro:
     - "8080:8080"
 api-user:
   build: ./api/user
-  command: --registry_address=consul:8500
-  links:
-    - consul
 api-score:
   build: ./api/score
-  command: --registry_address=consul:8500
-  links:
-    - consul
 api-chat:
   build: ./api/chat
-  command: --registry_address=consul:8500
-  links:
-    - consul
