@@ -17,17 +17,17 @@ micro:
   ports:
     - "8080:8080"
 api-user:
-  build: ./app/user/api
+  build: ./api/user
   command: --registry_address=consul:8500
   links:
     - consul
 api-score:
-  build: ./app/score/api
+  build: ./api/score
   command: --registry_address=consul:8500
   links:
     - consul
 api-chat:
-  build: ./app/chat/api
+  build: ./api/chat
   command: --registry_address=consul:8500
   links:
     - consul
