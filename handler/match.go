@@ -35,7 +35,7 @@ func FetchMatches(c *gin.Context) {
 
 	// Retrieve matches from database
 	matches := []*model.Match{}
-	db := mongodb.Clone()
+	db := Mongodb().Clone()
 	if err := db.DB("football_data").C("matches").
 		Find(bson.M{"Status": status, "matchdate": date}).
 		Skip((page - 1) * limit).

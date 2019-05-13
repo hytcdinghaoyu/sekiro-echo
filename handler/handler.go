@@ -10,7 +10,19 @@ var (
 	mongodb *mgo.Session
 )
 
-func init() {
+//Mongodb get db connection
+func Mongodb() *mgo.Session {
+	if mongodb == nil {
+		var err error
+		mongodb, err = mgo.Dial("localhost")
+		if err != nil {
+			log.Fatal(err)
+		}
+	}
+	return mongodb
+}
+
+func Ensure() {
 	// Database connection
 	var err error
 	mongodb, err = mgo.Dial("localhost")
