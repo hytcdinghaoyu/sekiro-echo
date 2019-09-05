@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"sekiro_echo/conf"
-	"sekiro_echo/model"
+	"sekiro-echo/conf"
+	"sekiro-echo/model"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"

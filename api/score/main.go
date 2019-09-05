@@ -5,7 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"sekiro_echo/handler"
+	"sekiro-echo/handler"
 
 	"github.com/micro/go-web"
 )

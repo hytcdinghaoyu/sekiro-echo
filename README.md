@@ -1,2 +1,2 @@
-# sekiro_echo
+# sekiro-echo
 a web app for sekiro

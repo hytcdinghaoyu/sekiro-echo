@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"sekiro_echo/model"
+	"sekiro-echo/model"
 
 	"github.com/gin-gonic/gin"
 )

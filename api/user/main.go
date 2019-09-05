@@ -5,11 +5,11 @@ import (
 
 	"github.com/gin-gonic/gin"
 
-	"sekiro_echo/handler"
+	"sekiro-echo/handler"
 
-	"sekiro_echo/conf"
+	"sekiro-echo/conf"
 
-	"sekiro_echo/lib/middleware"
+	"sekiro-echo/lib/middleware"
 
 	"github.com/micro/go-web"
 )

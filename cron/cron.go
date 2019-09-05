@@ -1,7 +1,7 @@
 package main
 
 import (
-	"sekiro_echo/jobs"
+	"sekiro-echo/jobs"
 
 	"github.com/jasonlvhit/gocron"
 )

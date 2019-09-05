@@ -5,7 +5,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
 
-	. "sekiro_echo/conf"
+	. "sekiro-echo/conf"
 )
 
 var db *gorm.DB

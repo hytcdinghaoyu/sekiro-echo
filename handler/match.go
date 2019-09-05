@@ -5,7 +5,7 @@ import (
 	"strconv"
 	"time"
 
-	"sekiro_echo/model"
+	"sekiro-echo/model"
 
 	"github.com/gin-gonic/gin"
 	"gopkg.in/mgo.v2/bson"

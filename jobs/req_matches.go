@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"sekiro_echo/model"
+	"sekiro-echo/model"
 
 	"github.com/fatih/structs"
 	"gopkg.in/mgo.v2"
