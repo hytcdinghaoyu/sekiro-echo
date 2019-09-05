@@ -4,7 +4,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/micro/go-web"
+	"github.com/micro/go-micro/web"
 	"gopkg.in/olahol/melody.v1"
 )
 

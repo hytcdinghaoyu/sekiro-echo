@@ -11,7 +11,7 @@ import (
 
 	"sekiro-echo/lib/middleware"
 
-	"github.com/micro/go-web"
+	"github.com/micro/go-micro/web"
 )
 
 func main() {

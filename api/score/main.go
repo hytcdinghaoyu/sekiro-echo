@@ -7,7 +7,7 @@ import (
 
 	"sekiro-echo/handler"
 
-	"github.com/micro/go-web"
+	"github.com/micro/go-micro/web"
 )
 
 func main() {

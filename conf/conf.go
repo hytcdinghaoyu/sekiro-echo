@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/BurntSushi/toml"
+	"github.com/labstack/gommon/log"
 )
 
 var (
