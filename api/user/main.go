@@ -1,6 +1,9 @@
 package main
 
 import (
+	"github.com/micro/go-micro/config"
+	"github.com/micro/go-micro/config/source"
+	"github.com/micro/go-micro/config/source/consul"
 	"log"
 
 	"github.com/gin-gonic/gin"
@@ -11,6 +14,7 @@ import (
 
 	"sekiro-echo/lib/middleware"
 
+	"github.com/micro/go-micro/config/encoder/toml"
 	"github.com/micro/go-micro/web"
 )
 
@@ -20,12 +24,17 @@ func main() {
 		web.Name("go.micro.api.user"),
 	)
 
-	// init conf
-	if err := conf.InitConfig("./conf/conf.toml"); err != nil {
-		log.Panic(err)
-	}
+	//load config from consul
+	e := toml.NewEncoder()
+	configure := config.NewConfig()
+	_ = configure.Load(consul.NewSource(
+		consul.WithAddress("129.211.75.241:8500"),
+		consul.WithPrefix("/sekiro/config"),
+		source.WithEncoder(e),
+	))
+	_ = configure.Get("sekiro", "config").Scan(&conf.Conf)
 
-	service.Init()
+	_ = service.Init()
 
 	// Create RESTful handler (using Gin)
 	router := gin.Default()
